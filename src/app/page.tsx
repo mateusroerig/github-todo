@@ -1,21 +1,25 @@
 "use client";
 
-import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "antd";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 export default function Home() {
-  const session = useSession();
+  const [loading, setLoading] = useState(false);
 
   return (
     <main className="flex justify-center items-center h-screen">
       <div>
-        {session?.data ? (
-          <div className="flex flex-col justify-center">
-            <p>{session.data?.user?.name}</p>
-            <button onClick={() => signOut()}>Logout</button>
-          </div>
-          ) : (
-          <button onClick={() => signIn("github")}>Login</button>
-        )}
+        <Button
+          type="primary"
+          loading={loading}
+          onClick={() => {
+            setLoading(true);
+            signIn("github", { callbackUrl: "/dashboard" });
+          }}
+        >
+          Login
+        </Button>
       </div>
     </main>
   );
