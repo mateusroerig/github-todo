@@ -3,6 +3,7 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import { Avatar, Button, Layout, Typography } from "antd";
 import { useSession, signOut } from "next-auth/react";
+import { useState } from "react";
 
 export default function DashboardLayout({
   children,
@@ -10,6 +11,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   const session = useSession();
+  const [loading, setLoading] = useState(false);
 
   return (
     <Layout>
@@ -24,7 +26,11 @@ export default function DashboardLayout({
           type="primary"
           icon={<LogoutOutlined />}
           danger
-          onClick={() => signOut({ callbackUrl: "/" })}
+          loading={loading}
+          onClick={() => {
+            setLoading(true);
+            signOut({ callbackUrl: "/" })
+          }}
         >
           Sair
         </Button>
