@@ -12,7 +12,7 @@ export default function Home() {
     <Layout className="h-screen">
       <Header />
 
-      <Layout.Content className="flex grow flex-col gap-16 justify-center items-center">
+      <Layout.Content className="flex grow flex-col gap-16 justify-center items-center max-w-xl">
         <div className="w-1/2 h-1/2 bg-gray-200 rounded-md"></div>
 
         <div className="flex flex-col gap-4 justify-center items-center">
