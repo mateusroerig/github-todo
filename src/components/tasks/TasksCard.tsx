@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, Radio, Button, Typography, Tag } from "antd";
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Card, Radio, Button, Typography, Badge } from "antd";
+import { EditOutlined, CopyOutlined,  } from '@ant-design/icons';
 import Task from '@/interfaces/Task';
 
 const TaskCard: React.FC<Task> = ({ title, description, prName, prStatus }) => {
@@ -13,18 +13,32 @@ const TaskCard: React.FC<Task> = ({ title, description, prName, prStatus }) => {
 
   return (
     <Card size="small">
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
         <Radio />
-        <div style={{ flex: 1, marginLeft: '16px' }}>
+        <div style={{ flex: 1 }}>
           <Typography.Title level={5} style={{ margin: 0 }}>{title}</Typography.Title>
           <Typography.Text style={{ margin: 0 }}>{description}</Typography.Text>
         </div>
-        <div style={{ marginRight: '8px' }}>
-          <Typography.Text>{prName}</Typography.Text>
-          <Tag color={statusColors[prStatus]}>{prStatus}</Tag>
+
+        <div 
+          className="p-1 gap-0.5 min-w-[120px] rounded-md flex items-center cursor-pointer"
+          style={{ border: '1px solid #303030' }}
+        >
+          <div 
+            className="rounded-full w-3 h-3 m-2" 
+            style={{ backgroundColor: statusColors[prStatus] }}
+          ></div>
+          
+          <div 
+            className="flex flex-col flex-1 items-start mr-4"
+          >
+            <Typography.Text strong style={{ lineHeight: '1.3' }}>{prName}</Typography.Text>
+            <Typography.Text type="secondary"  style={{ lineHeight: '1.3' }}>{prStatus}</Typography.Text>
+          </div>
         </div>
-        <Button type="primary" shape="circle" icon={<CheckCircleOutlined />} />
-        <Button type="primary" danger shape="circle" icon={<CloseCircleOutlined />} style={{ marginLeft: '8px' }} />
+
+        <Button type="default" shape="circle" icon={<EditOutlined />} />
+        <Button type="default" shape="circle" icon={<CopyOutlined />} />
       </div>
     </Card>
   );

@@ -36,7 +36,7 @@ export default function Dashboard() {
           <Button type="primary" icon={<PlusOutlined />}>
             Criar
           </Button>
-          <Button style={{ marginLeft: '10px' }} icon={<DownOutlined />}>
+          <Button style={{ marginLeft: '10px' }} icon={<DownOutlined />} iconPosition="end">
             Filtrar
           </Button>
         </div>
