@@ -30,7 +30,7 @@ const tasks: Task[] = [
 export default function Dashboard() {
   return (
     <div className="flex flex-col justify-center items-center h-[calc(100vh-64px)] w-full p-5">
-      <div className="flex mb-2 items-center justify-between w-full">
+      <div className="flex mb-5 items-center justify-between w-full">
         <h1>Dashboard</h1>
         <div>
           <Button type="primary" icon={<PlusOutlined />}>

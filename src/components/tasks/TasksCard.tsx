@@ -3,6 +3,7 @@
 import { Card, Radio, Button, Typography, Badge } from "antd";
 import { EditOutlined, CopyOutlined,  } from '@ant-design/icons';
 import Task from '@/interfaces/Task';
+import PullRequestSection from '@/components/tasks/PullRequestSection'
 
 const TaskCard: React.FC<Task> = ({ title, description, prName, prStatus }) => {
   const statusColors = {
@@ -20,22 +21,7 @@ const TaskCard: React.FC<Task> = ({ title, description, prName, prStatus }) => {
           <Typography.Text style={{ margin: 0 }}>{description}</Typography.Text>
         </div>
 
-        <div 
-          className="p-1 gap-0.5 min-w-[120px] rounded-md flex items-center cursor-pointer"
-          style={{ border: '1px solid #303030' }}
-        >
-          <div 
-            className="rounded-full w-3 h-3 m-2" 
-            style={{ backgroundColor: statusColors[prStatus] }}
-          ></div>
-          
-          <div 
-            className="flex flex-col flex-1 items-start mr-4"
-          >
-            <Typography.Text strong style={{ lineHeight: '1.3' }}>{prName}</Typography.Text>
-            <Typography.Text type="secondary"  style={{ lineHeight: '1.3' }}>{prStatus}</Typography.Text>
-          </div>
-        </div>
+        <PullRequestSection name={prName} status={prStatus} />
 
         <Button type="default" shape="circle" icon={<EditOutlined />} />
         <Button type="default" shape="circle" icon={<CopyOutlined />} />
