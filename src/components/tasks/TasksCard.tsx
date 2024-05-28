@@ -6,7 +6,12 @@ import Task from '@/interfaces/Task';
 import PullRequestSection from '@/components/tasks/PullRequestSection'
 import { useState } from "react";
 
-const TaskCard: React.FC<Task> = ({ title, description, prName, prStatus }) => {
+interface TaskCardProps {
+  task: Task;
+  duplicateTask: (id: number) => any;
+}
+
+const TaskCard: React.FC<TaskCardProps> = ({ task, duplicateTask }) => {
   const [expanded, setExpanded] = useState(false);
   const toggleExpanded = () => setExpanded(!expanded);
 
@@ -20,14 +25,14 @@ const TaskCard: React.FC<Task> = ({ title, description, prName, prStatus }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
           <Radio />
           <div style={{ flex: 1 }}>
-            <Typography.Title level={5} style={{ margin: 0 }}>{title}</Typography.Title>
-            <Typography.Text style={{ margin: 0 }}>{description}</Typography.Text>
+            <Typography.Title level={5} style={{ margin: 0 }}>{task.title}</Typography.Title>
+            <Typography.Text style={{ margin: 0 }}>{task.description}</Typography.Text>
           </div>
 
-          <PullRequestSection name={prName} status={prStatus} />
+          <PullRequestSection name={task.prName} status={task.prStatus} />
 
           <Button type="default" shape="circle" icon={<EditOutlined />} onClick={toggleExpanded} />
-          <Button type="default" shape="circle" icon={<CopyOutlined />} />
+          <Button type="default" shape="circle" icon={<CopyOutlined />} onClick={() => duplicateTask(task.id)} />
         </div>
 
         <div>
