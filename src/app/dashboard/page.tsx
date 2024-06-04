@@ -41,7 +41,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center h-[calc(100vh-64px)] w-full p-5">
+    <div className="flex flex-col items-center h-[calc(100vh-64px)] w-full p-5">
       <div className="flex mb-5 items-center justify-between w-full">
         <h1>Dashboard</h1>
         <div>

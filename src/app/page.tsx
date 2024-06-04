@@ -1,19 +1,26 @@
 "use client";
 
-import Header from "@/components/Header";
-import { Button, Layout } from "antd";
+import { Button, Layout, theme } from "antd";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
 export default function Home() {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+
   const [loading, setLoading] = useState(false);
 
   return (
     <Layout className="h-screen">
-      <Header />
-
-      <Layout.Content className="flex grow flex-col gap-16 justify-center items-center max-w-xl">
-        <div className="w-1/2 h-1/2 bg-gray-200 rounded-md"></div>
+      <Layout.Content className="flex flex-col gap-16 justify-center items-center">
+        <div
+          className="w-1/6 h-1/2 rounded-md"
+          style={{
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+          }}
+        ></div>
 
         <div className="flex flex-col gap-4 justify-center items-center">
           <Button
@@ -27,12 +34,16 @@ export default function Home() {
             Login com Github
           </Button>
 
-          <p>
-            Não possui uma conta?{" "}
-            <a href="https://github.com/signup" target="_blank" rel="noopener noreferrer">
-              Cadastre-se no Github.
+          <div className="text-center">
+            <p>Ainda não possui uma conta?</p>
+            <a
+              href="https://github.com/signup"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Cadastre-se no Github
             </a>
-          </p>
+          </div>
         </div>
       </Layout.Content>
     </Layout>
