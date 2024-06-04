@@ -12,22 +12,39 @@ export default function Dashboard() {
       id: 1,
       title: 'Criar a página de login',
       description: 'Criar a página de login com a autenticação do Github.',
-      prName: 'login-page',
-      prStatus: 'open'
+      pullRequest: {
+        id: 1,
+        name: 'login-page',
+        status: 'open'
+      },
+      order: 1
     },
     {
       id: 2,
       title: 'Criar a página de configurações',
       description: 'Criar a página de configurações do usuário.',
-      prName: 'config-page',
-      prStatus: 'closed'
+      pullRequest: {
+        id: 2,
+        name: 'config-page',
+        status: 'closed'
+      },
+      order: 2
     },
     {
       id: 3,
       title: 'Criar a página de dashboard',
       description: 'Criar a página de dashboard do usuário.',
-      prName: 'dashboard-page',
-      prStatus: 'merged'
+      pullRequest: {
+        id: 3,
+        name: 'dashboard-page',
+        status: 'merged'
+      },
+      order: 3
+    },
+    {
+      id: 4,
+      title: 'Tarefa vazia',
+      order: 4
     }
   ]);
 
