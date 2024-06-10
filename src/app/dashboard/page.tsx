@@ -1,16 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { PlusOutlined, DownOutlined } from "@ant-design/icons";
 import { Empty, FloatButton, Button } from "antd";
+
 import TasksDashboard from '@/components/tasks/TasksDashboard';
 import TasksCreateDialog from "@/components/tasks/TasksCreateDialog";
+
 import { tasksService } from '@/services/tasks.service';
+
 import Task from '@/interfaces/Task';
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   useEffect(() => {
     const tasks = tasksService.find() || [];

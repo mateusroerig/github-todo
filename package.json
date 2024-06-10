@@ -11,6 +11,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.1",
     "@ant-design/nextjs-registry": "^1.0.0",
+    "@octokit/core": "^6.1.2",
     "@prisma/client": "^5.14.0",
     "antd": "^5.17.4",
     "next": "14.1.3",

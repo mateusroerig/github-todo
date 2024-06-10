@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthConfig } from "next-auth";
+import NextAuth, { NextAuthConfig, User, Session } from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 
 export const config = {
@@ -8,6 +8,20 @@ export const config = {
       clientSecret: process.env.GITHUB_SECRET,
     }),
   ],
+  callbacks: {
+    async jwt({ token, account, profile }) {
+      // Persist the OAuth access_token and or the user id to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token
+      }
+      return token
+    },
+
+    async session({ session, token }) {
+      // Add property to session, like an access_token from a provider
+      return { ...session, accessToken: token.accessToken }
+    },
+  },
   session: {
     strategy: "jwt",
   },
