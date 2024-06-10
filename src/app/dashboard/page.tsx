@@ -1,60 +1,47 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { PlusOutlined, DownOutlined } from "@ant-design/icons";
 import { Empty, FloatButton, Button } from "antd";
 import TasksDashboard from '@/components/tasks/TasksDashboard';
+import TasksCreateDialog from "@/components/tasks/TasksCreateDialog";
+import { tasksService } from '@/services/tasks.service';
 import Task from '@/interfaces/Task';
-import { useState } from "react";
 
 export default function Dashboard() {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: 1,
-      title: 'Criar a página de login',
-      description: 'Criar a página de login com a autenticação do Github.',
-      pullRequest: {
-        id: 1,
-        name: 'login-page',
-        status: 'open'
-      },
-      order: 1
-    },
-    {
-      id: 2,
-      title: 'Criar a página de configurações',
-      description: 'Criar a página de configurações do usuário.',
-      pullRequest: {
-        id: 2,
-        name: 'config-page',
-        status: 'closed'
-      },
-      order: 2
-    },
-    {
-      id: 3,
-      title: 'Criar a página de dashboard',
-      description: 'Criar a página de dashboard do usuário.',
-      pullRequest: {
-        id: 3,
-        name: 'dashboard-page',
-        status: 'merged'
-      },
-      order: 3
-    },
-    {
-      id: 4,
-      title: 'Tarefa vazia',
-      order: 4
-    }
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    const tasks = tasksService.find() || [];
+    setTasks(tasks);
+  }, []);
 
   const duplicateTask = (id: number) => {
     const task = tasks.find(task => task.id === id);
     if (task) {
-      const maxId = Math.max(...tasks.map(task => task.id));
-      const newTask = { ...task, id: maxId + 1, title: `${task.title} (cópia)` };
-      setTasks([...tasks, newTask]);
+      tasksService.create({ ...task, id: tasks.length + 1 });
+      setTasks(tasksService.find());
     }
+  }
+
+  const updateTask = (task: Task) => {
+    tasksService.update(task);
+    setTasks(tasksService.find());
+  }
+
+  const openCreateDialog = () => {
+    setIsModalVisible(true);
+  }
+  
+  const handleCreate = (values: any) => {
+    console.log('Received values of form: ', values);
+    setIsModalVisible(false);
+    setTasks(tasksService.find());
+  }
+  
+  const handleCancel = () => {
+    setIsModalVisible(false);
   }
 
   return (
@@ -62,7 +49,11 @@ export default function Dashboard() {
       <div className="flex mb-5 items-center justify-between w-full">
         <h1>Dashboard</h1>
         <div>
-          <Button type="primary" icon={<PlusOutlined />}>
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />}
+            onClick={openCreateDialog}
+          >
             Criar
           </Button>
           <Button style={{ marginLeft: '10px' }} icon={<DownOutlined />} iconPosition="end">
@@ -71,8 +62,14 @@ export default function Dashboard() {
         </div>
       </div>
 
+      <TasksCreateDialog open={isModalVisible} onCreate={handleCreate} onCancel={handleCancel} />
+
       {tasks.length > 0 ? (
-        <TasksDashboard tasks={tasks} duplicateTask={duplicateTask}/>
+        <TasksDashboard 
+          tasks={tasks} 
+          updateTask={updateTask}
+          duplicateTask={duplicateTask}
+        />
       ) : (
         <>
           <Empty description="Nenhuma tarefa no momento"/>
