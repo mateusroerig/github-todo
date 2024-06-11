@@ -9,8 +9,11 @@ datasource db {
 }
 
 model Task {
-  id          Int    @id @default(autoincrement())
-  userId      Int
-  title       String
-  description String
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  title          String
+  description    String?
+  pullRequest    Int?
+  date           DateTime?
+  prioritySelect String?
 }
