@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { PlusOutlined, DownOutlined } from "@ant-design/icons";
-import { Empty, FloatButton, Button } from "antd";
+import { Empty, Button } from "antd";
 
 import TasksDashboard from '@/components/tasks/TasksDashboard';
 import TasksCreateDialog from "@/components/tasks/TasksCreateDialog";
@@ -82,10 +82,7 @@ export default function Dashboard() {
           duplicateTask={duplicateTask}
         />
       ) : (
-        <>
-          <Empty description="Nenhuma tarefa no momento"/>
-          <FloatButton type="primary" icon={<PlusOutlined />} />
-        </>
+        <Empty description="Nenhuma tarefa no momento" />
       )}
     </div>
   );
