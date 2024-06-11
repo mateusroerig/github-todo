@@ -1,5 +1,5 @@
-import { Card, Radio, Button, Typography, Badge, Divider, Tag, Input, Select, DatePicker } from "antd";
-import { EditOutlined, CopyOutlined,  } from '@ant-design/icons';
+import { Card, Radio, Button, Typography, Input, Select, DatePicker, message, Modal } from "antd";
+import { EditOutlined, CopyOutlined, DeleteOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 import Task from '@/interfaces/Task';
 import PullRequestSection from '@/components/tasks/PullRequestSection'
 import { useState } from "react";
@@ -10,17 +10,30 @@ import './tasks.css';
 interface TaskCardProps {
   task: Task;
   duplicateTask: (id: number) => any;
+  deleteTask: (id: number) => void;
   updateTask: (updatedTask: Task) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, duplicateTask, updateTask }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, duplicateTask, updateTask, deleteTask }) => {
   const [expanded, setExpanded] = useState(false);
   const [taskCopy, setTaskCopy] = useState<Task>({ ...task });
+  const [isCompleted, setIsCompleted] = useState(task.completed || false);
+
+  const handleCompletionChange = (e: any) => {
+    const completed = !task.completed;
+    setIsCompleted(completed);
+    updateTask({ ...task, completed });
+  
+    if (completed) {
+      message.success('Tarefa concluída com sucesso!', 1);
+    } else {
+      message.info('Tarefa marcada como pendente.', 1);
+    }
+  };
+
   const toggleExpanded = () => {
     setExpanded(!expanded);
-    if (!expanded) {
-      setTaskCopy({ ...task });
-    }
+    if (!expanded) { setTaskCopy({ ...task }); }
   };
 
 
@@ -47,6 +60,21 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, duplicateTask, updateTask }) 
     setExpanded(false);
   };
 
+
+  const showDeleteConfirm = () => {
+    Modal.confirm({
+      title: 'Você tem certeza que deseja excluir essa tarefa?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Essa ação não poderá ser desfeita!',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+        deleteTask(task.id);
+      }
+    });
+  };
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setTaskCopy({ ...taskCopy, [event.target.name]: event.target.value });
   };
@@ -68,7 +96,8 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, duplicateTask, updateTask }) 
       className="hover:shadow-lg" 
     >
       <div className="task-content">
-        <Radio />
+        { isCompleted }
+        <Radio checked={isCompleted} onClick={handleCompletionChange} />
         <div style={{ flex: 1 }}>
           <Typography.Title level={5} style={{ margin: 0 }}>{task.title}</Typography.Title>
           { (!expanded || !task.description) && <Typography.Text style={{ margin: 0 }}>{task.description}</Typography.Text>}
@@ -126,6 +155,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, duplicateTask, updateTask }) 
                 <div className="flex ml-4 gap-2">
                   <Button type="primary" onClick={saveChanges}>Salvar</Button>
                   <Button type="default" onClick={toggleExpanded}>Fechar</Button>
+                  <Button type="default" danger icon={<DeleteOutlined />} onClick={showDeleteConfirm}></Button>
                 </div>
               </div>
             </div>

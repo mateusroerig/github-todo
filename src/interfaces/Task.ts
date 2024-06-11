@@ -5,6 +5,7 @@ export default interface Task {
   priority?: string;
   date?: string;
   order: number;
+  completed: boolean;
   pullRequest?: {
     id: number;
     name: string;

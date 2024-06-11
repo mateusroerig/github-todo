@@ -5,10 +5,11 @@ import Task from '@/interfaces/Task';
 interface TasksDashboardProps {
   tasks: Task[];
   updateTask: (task: Task) => void;
+  deleteTask: (id: number) => void;
   duplicateTask: (id: number) => void;
 }
 
-const TasksDashboard: React.FC<TasksDashboardProps> = ({ tasks, duplicateTask, updateTask }) => {
+const TasksDashboard: React.FC<TasksDashboardProps> = ({ tasks, duplicateTask, deleteTask, updateTask }) => {
   return (
     <div className='flex flex-col gap-4 w-full'>
       {tasks.map(task => (
@@ -16,6 +17,7 @@ const TasksDashboard: React.FC<TasksDashboardProps> = ({ tasks, duplicateTask, u
           key={task.id} 
           task={task}
           updateTask={updateTask}
+          deleteTask={deleteTask}
           duplicateTask={duplicateTask}
         />
       ))}

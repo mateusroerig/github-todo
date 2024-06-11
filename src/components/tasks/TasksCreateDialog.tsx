@@ -56,7 +56,7 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({ open, onCreate, o
         form={form}
         layout="vertical"
         name="form_in_modal"
-        initialValues={{ modifier: 'public' }}
+        initialValues={{ modifier: 'public', date: dayjs() }}
       >
         <Form.Item
           name="title"
@@ -74,15 +74,6 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({ open, onCreate, o
           style={{ marginBottom: 8 }}
         >
           <Input.TextArea placeholder="Descrição" />
-        </Form.Item>
-
-        <Form.Item
-          name="priority"
-          label="Prioridade"
-          rules={[{ required: true, message: 'Por favor adicione um nivel de Prioridade!' }]}
-          style={{ marginBottom: 8 }}
-        >
-          <Input />
         </Form.Item>
 
         <Form.Item

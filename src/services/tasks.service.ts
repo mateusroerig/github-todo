@@ -21,8 +21,8 @@ class TasksService {
         this.dbService.update(task);
     }
 
-    delete(taskId: string): void {
-        this.dbService.delete(taskId);
+    delete(id: number): void {
+        this.dbService.delete(id);
     }
 }
 

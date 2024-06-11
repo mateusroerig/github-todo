@@ -35,6 +35,11 @@ export default function Dashboard() {
     setTasks(tasksService.find());
   }
 
+  const deleteTask = (id: number) => {
+    tasksService.delete(id);
+    setTasks(tasksService.find());
+  }
+
   const openCreateDialog = () => {
     setIsModalVisible(true);
   }
@@ -73,6 +78,7 @@ export default function Dashboard() {
         <TasksDashboard 
           tasks={tasks} 
           updateTask={updateTask}
+          deleteTask={deleteTask}
           duplicateTask={duplicateTask}
         />
       ) : (
