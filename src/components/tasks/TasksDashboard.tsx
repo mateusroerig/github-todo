@@ -1,6 +1,6 @@
-import React from 'react';
-import TaskCard from './TasksCard';
-import Task from '@/interfaces/Task';
+import React from "react";
+import TaskCard from "./TasksCard";
+import { Task } from "@prisma/client";
 
 interface TasksDashboardProps {
   tasks: Task[];
@@ -9,12 +9,17 @@ interface TasksDashboardProps {
   duplicateTask: (id: number) => void;
 }
 
-const TasksDashboard: React.FC<TasksDashboardProps> = ({ tasks, duplicateTask, deleteTask, updateTask }) => {
+const TasksDashboard: React.FC<TasksDashboardProps> = ({
+  tasks,
+  duplicateTask,
+  deleteTask,
+  updateTask,
+}) => {
   return (
-    <div className='flex flex-col gap-4 w-full'>
-      {tasks.map(task => (
-        <TaskCard 
-          key={task.id} 
+    <div className="flex flex-col gap-4 w-full">
+      {tasks.map((task) => (
+        <TaskCard
+          key={task.id}
           task={task}
           updateTask={updateTask}
           deleteTask={deleteTask}

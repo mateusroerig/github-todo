@@ -1,6 +1,6 @@
-import { Modal, Form, Input, Select, DatePicker, Button, Row, Col } from 'antd';
-import { tasksService } from '@/services/tasks.service';
-import dayjs from 'dayjs';
+import { Modal, Form, Input, Select, DatePicker, Row, Col } from "antd";
+import dayjs from "dayjs";
+import axios from "axios";
 
 interface TasksCreateDialogProps {
   open: boolean;
@@ -8,26 +8,30 @@ interface TasksCreateDialogProps {
   onCancel: () => void;
 }
 
-const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({ open, onCreate, onCancel }) => {
+const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
+  open,
+  onCreate,
+  onCancel,
+}) => {
   const [form] = Form.useForm();
 
   const priorityOptions = [
-    { value: 'none', label: 'Nenhuma'},
-    { value: 'low', label: 'Baixa' },
-    { value: 'medium', label: 'Média' },
-    { value: 'high', label: 'Alta' },
-    { value: 'urgent', label: 'Urgente'}
+    { value: "none", label: "Nenhuma" },
+    { value: "low", label: "Baixa" },
+    { value: "medium", label: "Média" },
+    { value: "high", label: "Alta" },
+    { value: "urgent", label: "Urgente" },
   ];
 
   const prOptions = [
-    { value: 'login-page', label: 'login-page' },
-    { value: 'config-page', label: 'config-page' },
-    { value: 'dashboard-page', label: 'dashboard-page' },
+    { value: "login-page", label: "login-page" },
+    { value: "config-page", label: "config-page" },
+    { value: "dashboard-page", label: "dashboard-page" },
   ];
 
   const handleSearch = (value: string) => {
-    console.log('search:', value);
-  }
+    console.log("search:", value);
+  };
 
   return (
     <Modal
@@ -39,29 +43,36 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({ open, onCreate, o
       onOk={() => {
         form
           .validateFields()
-          .then(values => {
-            tasksService.create({ 
-              ...values, 
-              date: dayjs(values.date).format('DD/MM/YYYY'),
-              id: Math.floor(Math.random() * 1000) + 1
-            });
+          .then(async (values) => {
+            const task = await axios
+              .post("/api/task", {
+                ...values,
+                date: dayjs(values.date).toISOString(),
+                userId: 1,
+              })
+              .then((res) => res.data);
 
-            onCreate(values);
+            onCreate(task);
             form.resetFields();
           })
-          .catch(info => console.log('Validate Failed:', info));
+          .catch((info) => console.log("Validate Failed:", info));
       }}
     >
       <Form
         form={form}
         layout="vertical"
         name="form_in_modal"
-        initialValues={{ modifier: 'public', date: dayjs() }}
+        initialValues={{ modifier: "public", date: dayjs() }}
       >
         <Form.Item
           name="title"
           label="Título"
-          rules={[{ required: true, message: 'Por favor preencha o Título da tarefa!' }]}
+          rules={[
+            {
+              required: true,
+              message: "Por favor preencha o Título da tarefa!",
+            },
+          ]}
           style={{ marginBottom: 8 }}
         >
           <Input />
@@ -70,7 +81,9 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({ open, onCreate, o
         <Form.Item
           name="description"
           label="Descrição"
-          rules={[{ required: true, message: 'Por favor preencha a descrição!' }]}
+          rules={[
+            { required: true, message: "Por favor preencha a descrição!" },
+          ]}
           style={{ marginBottom: 8 }}
         >
           <Input.TextArea placeholder="Descrição" />
@@ -94,27 +107,20 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({ open, onCreate, o
 
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item
-              name="date"
-              label="Data"
-              style={{ marginBottom: 8 }}
-            >
-              <DatePicker 
-                style={{ width: '100%' }}
-                format={'DD/MM/YYYY'} 
-              />
+            <Form.Item name="date" label="Data" style={{ marginBottom: 8 }}>
+              <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
             </Form.Item>
           </Col>
 
           <Col span={12}>
             <Form.Item
-              name="prioritySelect"
+              name="priority"
               label="Prioridade"
               style={{ marginBottom: 8 }}
             >
               <Select
                 placeholder="Prioridade"
-                style={{ width: '100%' }}
+                style={{ width: "100%" }}
                 popupMatchSelectWidth={false}
                 options={priorityOptions}
               />

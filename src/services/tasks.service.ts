@@ -1,30 +1,34 @@
-import DBService from './db.service';
+import { Task } from "@prisma/client";
 
-import Task from '@/interfaces/Task';
+import TaskRepository from "@/repositories/TaskRepository";
 
 class TasksService {
-    private dbService: DBService;
+  private repository: TaskRepository;
 
-    constructor() {
-        this.dbService = new DBService('tasks');
-    }
+  constructor() {
+    this.repository = new TaskRepository();
+  }
 
-    find(): Task[] {
-        return this.dbService.find();
-    }
+  getAll() {
+    return this.repository.getAll();
+  }
 
-    create(task: Task): void {
-        this.dbService.create(task);
-    }
+  getById(id: number) {
+    return this.repository.getById(id);
+  }
 
-    update(task: Task): void {
-        this.dbService.update(task);
-    }
+  save(task: Omit<Task, "id">) {
+    return this.repository.save(task);
+  }
 
-    delete(id: number): void {
-        this.dbService.delete(id);
-    }
+  update(task: Task) {
+    return this.repository.update(task);
+  }
+
+  delete(id: number) {
+    return this.repository.delete(id);
+  }
 }
 
-// make it allways export the same instance
+// make it always export the same instance
 export const tasksService = new TasksService();
