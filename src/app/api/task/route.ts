@@ -17,8 +17,3 @@ export async function PUT(req: Request, res: Response) {
   const task = await tasksService.update(data);
   return Response.json(task);
 }
-
-export async function DELETE(req: Request, res: Response) {
-  await tasksService.delete(1);
-  return Response.json({ message: "Task deleted" });
-}
