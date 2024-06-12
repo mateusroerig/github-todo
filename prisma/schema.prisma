@@ -10,7 +10,7 @@ datasource db {
 
 model Task {
   id                Int       @id @default(autoincrement())
-  userId            Int
+  userId            String
   title             String
   description       String?
   pullRequestId     Int?

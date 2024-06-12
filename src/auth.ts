@@ -9,17 +9,25 @@ export const config = {
     }),
   ],
   callbacks: {
-    async jwt({ token, account, profile }) {
+    async jwt({ token, account, profile, user }) {
       // Persist the OAuth access_token and or the user id to the token right after signin
       if (account) {
-        token.accessToken = account.access_token
+        token.accessToken = account.access_token;
       }
-      return token
+
+      if (user) {
+        token.userId = user.id;
+      }
+
+      return token;
     },
 
     async session({ session, token }) {
+      if (session && token?.userId) {
+        session.user.id = token.userId as string;
+      }
       // Add property to session, like an access_token from a provider
-      return { ...session, accessToken: token.accessToken }
+      return { ...session, accessToken: token.accessToken };
     },
   },
   session: {

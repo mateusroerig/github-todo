@@ -1,6 +1,7 @@
 import { Modal, Form, Input, Select, DatePicker, Row, Col } from "antd";
 import dayjs from "dayjs";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 interface TasksCreateDialogProps {
   open: boolean;
@@ -13,6 +14,8 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
   onCreate,
   onCancel,
 }) => {
+  const session = useSession();
+
   const [form] = Form.useForm();
 
   const priorityOptions = [
@@ -48,7 +51,7 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
               .post("/api/task", {
                 ...values,
                 date: dayjs(values.date).toISOString(),
-                userId: 1,
+                userId: session?.data?.user?.id,
               })
               .then((res) => res.data);
 

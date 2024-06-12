@@ -3,10 +3,10 @@ import { Task } from "@prisma/client";
 import prisma from "../../lib/prisma";
 
 export default class TaskRepository {
-  getAll() {
+  getAll(userId: string) {
     return prisma.task.findMany({
       where: {
-        userId: 1,
+        userId: userId,
       },
       orderBy: {
         completed: "asc",

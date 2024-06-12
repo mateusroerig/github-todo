@@ -9,8 +9,8 @@ class TasksService {
     this.repository = new TaskRepository();
   }
 
-  getAll() {
-    return this.repository.getAll();
+  getAll(userId: string) {
+    return this.repository.getAll(userId);
   }
 
   getById(id: number) {

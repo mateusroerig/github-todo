@@ -9,29 +9,41 @@ import TasksCreateDialog from "@/components/tasks/TasksCreateDialog";
 
 import { Task } from "@prisma/client";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
+  const session = useSession();
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const tasks = await axios.get("/api/task").then((res) => res.data);
+      if (!session?.data?.user?.id) return;
+
+      const tasks = await axios
+        .get("/api/task", { params: { userId: session?.data?.user?.id } })
+        .then((res) => res.data);
+
       setTasks(tasks);
     })();
-  }, []);
+  }, [session?.data?.user?.id]);
 
   const duplicateTask = async (id: number) => {
     const task = tasks.find((task) => task.id === id);
 
     if (!task) return;
 
-    const newTask = await axios.post("/api/task", {...task, id: undefined}).then((res) => res.data);
+    const newTask = await axios
+      .post("/api/task", { ...task, id: undefined })
+      .then((res) => res.data);
     setTasks([...tasks, newTask]);
   };
 
   const updateTask = async (task: Task) => {
-    const updatedTask = await axios.put("/api/task", task).then((res) => res.data);
+    const updatedTask = await axios
+      .put("/api/task", task)
+      .then((res) => res.data);
     setTasks(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
   };
 
