@@ -5,7 +5,6 @@ import { TaskFilter } from "./TaskFilter";
 
 export default class TaskRepository {
   get(userId: string, filters: TaskFilter) {
-    console.log(filters.completed);
     return prisma.task.findMany({
       where: {
         userId: userId,

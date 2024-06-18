@@ -21,6 +21,7 @@ import dayjs from "dayjs";
 
 import "./tasks.css";
 import { Task } from "@prisma/client";
+import { priorityOptions } from "@/utils/constants";
 
 interface TaskCardProps {
   task: Task;
@@ -57,14 +58,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
       setTaskCopy({ ...task });
     }
   };
-
-  const priorityOptions = [
-    { value: "none", label: "Nenhuma" },
-    { value: "low", label: "Baixa" },
-    { value: "medium", label: "Média" },
-    { value: "high", label: "Alta" },
-    { value: "urgent", label: "Urgente" },
-  ];
 
   const prOptions = [
     { value: "login-page", label: "login-page" },
