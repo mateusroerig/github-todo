@@ -45,14 +45,25 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
       onCancel={onCancel}
       onOk={() => {
         form
-          .validateFields()
-          .then(async (values) => {
+        .validateFields()
+        .then(async (values) => {
+            const taskInfos = {
+              ...values,
+              date: dayjs(values.date).toISOString(),
+              userId: session?.data?.user?.id,
+              pullRequest: undefined,
+            }
+
+            const selectedPrInfos = prOptions.find((pr) => pr.value === values.pullRequest)
+
+            if (selectedPrInfos) {
+              taskInfos.pullRequestId = 1;
+              taskInfos.pullRequestName = selectedPrInfos.label;
+              taskInfos.pullRequestStatus = selectedPrInfos.label;
+            }
+
             const task = await axios
-              .post("/api/task", {
-                ...values,
-                date: dayjs(values.date).toISOString(),
-                userId: session?.data?.user?.id,
-              })
+              .post("/api/task", taskInfos)
               .then((res) => res.data);
 
             onCreate(task);
