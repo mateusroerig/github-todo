@@ -76,7 +76,7 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
         form={form}
         layout="vertical"
         name="form_in_modal"
-        initialValues={{ modifier: "public", date: dayjs() }}
+        initialValues={{ modifier: "public", date: dayjs().startOf('day') }}
       >
         <Form.Item
           name="title"
@@ -95,9 +95,6 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
         <Form.Item
           name="description"
           label="Descrição"
-          rules={[
-            { required: true, message: "Por favor preencha a descrição!" },
-          ]}
           style={{ marginBottom: 8 }}
         >
           <Input.TextArea placeholder="Descrição" />

@@ -1,6 +1,7 @@
 import { Task } from "@prisma/client";
 
 import TaskRepository from "@/repositories/TaskRepository";
+import { TaskFilter } from "@/repositories/TaskFilter";
 
 class TasksService {
   private repository: TaskRepository;
@@ -9,8 +10,8 @@ class TasksService {
     this.repository = new TaskRepository();
   }
 
-  getAll(userId: string) {
-    return this.repository.getAll(userId);
+  get(userId: string, filters: TaskFilter) {
+    return this.repository.get(userId, filters);
   }
 
   getById(id: number) {

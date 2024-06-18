@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PlusOutlined, DownOutlined } from "@ant-design/icons";
 import { Empty, Button } from "antd";
 
 import TasksDashboard from "@/components/tasks/TasksDashboard";
 import TasksCreateDialog from "@/components/tasks/TasksCreateDialog";
+import FilterDropdownButton, { FilterValues } from "@/components/FilterDropdownButton";
 
 import { Task } from "@prisma/client";
 import axios from "axios";
@@ -17,17 +18,26 @@ export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const fetchTasks = useCallback(async (filters: FilterValues = {}) => {
+    const userId = session.data?.user?.id
+    if (!userId) return;
+    
+    const fetchedTasks = await axios
+      .get("/api/task", { params: { userId, ...filters } })
+      .then((res) => res.data);
+  
+    setTasks(fetchedTasks);
+  }, [session, setTasks]);
+
   useEffect(() => {
     (async () => {
-      if (!session?.data?.user?.id) return;
-
-      const tasks = await axios
-        .get("/api/task", { params: { userId: session?.data?.user?.id } })
-        .then((res) => res.data);
-
-      setTasks(tasks);
+      await fetchTasks();
     })();
-  }, [session?.data?.user?.id]);
+  }, [fetchTasks, session]); // Add session as a dependency if fetchTasks should run on session change
+
+  const applyFiltering = async (filters: any) => {
+    await fetchTasks(filters);
+  };
 
   const duplicateTask = async (id: number) => {
     const task = tasks.find((task) => task.id === id);
@@ -44,6 +54,7 @@ export default function Dashboard() {
     const updatedTask = await axios
       .put("/api/task", task)
       .then((res) => res.data);
+
     setTasks(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
   };
 
@@ -69,7 +80,7 @@ export default function Dashboard() {
     <div className="flex flex-col items-center h-[calc(100vh-64px)] w-full p-5">
       <div className="flex mb-5 items-center justify-between w-full">
         <h1>Dashboard</h1>
-        <div>
+        <div className="flex gap-4">
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -77,13 +88,9 @@ export default function Dashboard() {
           >
             Criar
           </Button>
-          <Button
-            style={{ marginLeft: "10px" }}
-            icon={<DownOutlined />}
-            iconPosition="end"
-          >
-            Filtrar
-          </Button>
+
+          <FilterDropdownButton applyFiltering={applyFiltering} />
+          
         </div>
       </div>
 
