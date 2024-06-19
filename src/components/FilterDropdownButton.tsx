@@ -11,12 +11,14 @@ export interface FilterValues {
   description?: string;
   date?: Date;
   completed?: 'true' | 'false' | 'both';
+  [key: string]: string | Date | undefined;
 }
 
 const FilterDropdownButton = ({ applyFiltering }: FilterDropdownButtonProps) => {
   const [form] = Form.useForm();
 
   const [visible, setVisible] = useState(false);
+  const [filtersApplied, setFiltersApplied] = useState(false);
 
   const handleVisibleChange = (flag: boolean) => {
     setVisible(flag);
@@ -24,7 +26,12 @@ const FilterDropdownButton = ({ applyFiltering }: FilterDropdownButtonProps) => 
 
   const onFinish = (values: FilterValues) => {
     applyFiltering(values);
-    setVisible(false); 
+    setVisible(false);
+    
+    const isFiltered = Object.keys(values).some(key => 
+      (key !== 'completed' || values[key] !== 'both') && values[key] !== undefined
+    );
+    setFiltersApplied(isFiltered);
   };
 
   const menu = (
@@ -69,7 +76,9 @@ const FilterDropdownButton = ({ applyFiltering }: FilterDropdownButtonProps) => 
       trigger={['click']}
     >
       <Button>
-        Filtrar <DownOutlined />
+        Filtrar
+        {filtersApplied && <span className='filter-applied-circle' />}
+        <DownOutlined />
       </Button>
     </Dropdown>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useLoading } from "@/components/Loading/LoadingContexts";
 import { Button, Layout, theme } from "antd";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
@@ -10,6 +11,7 @@ export default function Home() {
   } = theme.useToken();
 
   const [loading, setLoading] = useState(false);
+  const { startLoading, stopLoading } = useLoading();
 
   return (
     <Layout className="h-screen">
@@ -28,6 +30,7 @@ export default function Home() {
             loading={loading}
             onClick={() => {
               setLoading(true);
+              startLoading();
               signIn("github", { callbackUrl: "/dashboard" });
             }}
           >

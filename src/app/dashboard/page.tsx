@@ -11,14 +11,17 @@ import FilterDropdownButton, { FilterValues } from "@/components/FilterDropdownB
 import { Task } from "@prisma/client";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useLoading } from "@/components/Loading/LoadingContexts";
 
 export default function Dashboard() {
   const session = useSession();
+  const { startLoading, stopLoading } = useLoading();
 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const fetchTasks = useCallback(async (filters: FilterValues = {}) => {
+    
     const userId = session.data?.user?.id
     if (!userId) return;
     
@@ -36,31 +39,43 @@ export default function Dashboard() {
   }, [fetchTasks, session]); // Add session as a dependency if fetchTasks should run on session change
 
   const applyFiltering = async (filters: any) => {
+    startLoading();
     await fetchTasks(filters);
+    stopLoading();
   };
 
   const duplicateTask = async (id: number) => {
-    const task = tasks.find((task) => task.id === id);
+    startLoading();
 
-    if (!task) return;
+    const task = tasks.find((task) => task.id === id);
+    if (!task) {
+      stopLoading();
+      return;
+    }
 
     const newTask = await axios
       .post("/api/task", { ...task, id: undefined })
       .then((res) => res.data);
+
     setTasks([...tasks, newTask]);
+    stopLoading();
   };
 
   const updateTask = async (task: Task) => {
+    startLoading();
     const updatedTask = await axios
       .put("/api/task", task)
       .then((res) => res.data);
 
     setTasks(tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t)));
+    stopLoading();
   };
 
   const deleteTask = async (id: number) => {
+    startLoading();
     await await axios.delete("/api/task/" + id).then((res) => res.data);
     setTasks(tasks.filter((task) => task.id !== id));
+    stopLoading();
   };
 
   const openCreateDialog = () => {

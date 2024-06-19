@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { Providers } from "./providers";
+import { LoadingProvider } from "@/components/Loading/LoadingContexts";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang="en" className={inter.className}>
       <body className="antialiased min-h-screen flex flex-col">
         <AntdRegistry>
-          <Providers>{children}</Providers>
+          <LoadingProvider> {/* Add LoadingProvider here */}
+            <Providers>{children}</Providers>
+          </LoadingProvider>
         </AntdRegistry>
       </body>
     </html>

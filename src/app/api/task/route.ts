@@ -14,7 +14,14 @@ export async function GET(req: Request, res: Response) {
   const date = dateParam ? new Date(dateParam) : undefined;
 
   const completedParam = searchParams.get("completed");
-  const completed = completedParam ? completedParam === 'true' : undefined;
+  let completed = undefined;
+  if (completedParam) {
+    if (completedParam === 'true') {
+      completed = true;
+    } else if (completedParam === 'false') {
+      completed = false;
+    }
+  }
   
   const filters: TaskFilter = {
     title: searchParams.get("title") || undefined,

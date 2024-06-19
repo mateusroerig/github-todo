@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { priorityOptions } from "@/utils/constants";
+import { useLoading } from "../Loading/LoadingContexts";
 
 interface TasksCreateDialogProps {
   open: boolean;
@@ -16,6 +17,7 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
   onCancel,
 }) => {
   const session = useSession();
+  const { startLoading, stopLoading } = useLoading();
 
   const [form] = Form.useForm();
 
@@ -40,6 +42,7 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
         form
         .validateFields()
         .then(async (values) => {
+            startLoading();
             const taskInfos = {
               ...values,
               date: dayjs(values.date).toISOString(),
@@ -62,7 +65,8 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
             onCreate(task);
             form.resetFields();
           })
-          .catch((info) => console.log("Validate Failed:", info));
+          .catch((info) => console.log("Validate Failed:", info))
+          .finally(() => stopLoading());
       }}
     >
       <Form
