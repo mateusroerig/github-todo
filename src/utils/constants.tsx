@@ -5,3 +5,9 @@ export const priorityOptions = [
   { value: "high", label: "Alta" },
   { value: "urgent", label: "Urgente" },
 ];
+
+export const statusOptions = [
+  { value: "open", label: "Aberto", color: "blue" },
+  { value: "merged", label: "Mergeado", color: "green" },
+  { value: "closed", label: "Fechado", color: "red" },
+];

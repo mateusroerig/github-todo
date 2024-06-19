@@ -2,13 +2,23 @@ import { Modal, Form, Input, Select, DatePicker, Row, Col } from "antd";
 import dayjs from "dayjs";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { priorityOptions } from "@/utils/constants";
+import { priorityOptions, statusOptions } from "@/utils/constants";
 import { useLoading } from "../Loading/LoadingContexts";
+import { getPullRequests } from "@/services/github.service";
+import { useEffect, useState } from "react";
 
 interface TasksCreateDialogProps {
   open: boolean;
   onCreate: (values: any) => void;
   onCancel: () => void;
+}
+
+type prOption = {
+  label: JSX.Element;
+  value: number;
+  status: string;
+  repository: string;
+  title: string;
 }
 
 const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
@@ -18,14 +28,55 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
 }) => {
   const session = useSession();
   const { startLoading, stopLoading } = useLoading();
+  const [prOptions, setPrOptions] = useState([] as prOption[]);
+
+  useEffect(() => {
+    const getPRStatus = (pr: any) => {
+      if (pr.merged_at) return "merged";
+      return pr.state;
+    }
+  
+    const formatPRInfos = (prInfos: any) => {
+      return prInfos.map((pr: any) => {
+        const status = getPRStatus(pr);
+        const statusColor = statusOptions.find((s) => s.value === status)?.color;
+  
+        const label = (
+          <div>
+            <span style={{ height: '10px', width: '10px', backgroundColor: statusColor, borderRadius: '50%', display: 'inline-block', marginRight: '5px' }}></span>
+            {pr.title} <span style={{ color: '#888' }}>({pr.base.repo.name})</span>
+          </div>
+        );
+  
+        return {
+          title: pr.title,
+          value: pr.id,
+          status,
+          repository: pr.base.repo.name,
+          label
+        }
+      })
+    };
+
+    const fetchPullRequests = async () => {
+      try {
+        const accessToken = (session.data as any)?.accessToken;
+        if (!accessToken) return;
+
+        const prInfos = await getPullRequests(accessToken);
+
+        const formattedData = formatPRInfos(prInfos);
+
+        setPrOptions(formattedData);
+      } catch (error) {
+        console.error('Failed to fetch pull requests:', error);
+      }
+    };
+
+    fetchPullRequests();
+  }, [session.data]);
 
   const [form] = Form.useForm();
-
-  const prOptions = [
-    { value: "login-page", label: "login-page" },
-    { value: "config-page", label: "config-page" },
-    { value: "dashboard-page", label: "dashboard-page" },
-  ];
 
   const handleSearch = (value: string) => {
     console.log("search:", value);
@@ -53,9 +104,9 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
             const selectedPrInfos = prOptions.find((pr) => pr.value === values.pullRequest)
 
             if (selectedPrInfos) {
-              taskInfos.pullRequestId = 1;
-              taskInfos.pullRequestName = selectedPrInfos.label;
-              taskInfos.pullRequestStatus = selectedPrInfos.label;
+              taskInfos.pullRequestId = selectedPrInfos.value;
+              taskInfos.pullRequestName = selectedPrInfos.title;
+              taskInfos.pullRequestStatus = selectedPrInfos.status;
             }
 
             const task = await axios
