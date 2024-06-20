@@ -15,16 +15,14 @@ export const config = {
         token.accessToken = account.access_token;
       }
 
-      if (user) {
-        token.userId = user.id;
-      }
-
       return token;
     },
 
     async session({ session, token }) {
-      if (session && token?.userId) {
-        session.user.id = token.userId as string;
+      if (session.user?.image) {
+        session.user.id = session.user.image
+          ?.replace("https://avatars.githubusercontent.com/u/", "")
+          .replace("?v=4", "");
       }
       // Add property to session, like an access_token from a provider
       return { ...session, accessToken: token.accessToken };
