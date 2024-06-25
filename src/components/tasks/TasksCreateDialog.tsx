@@ -2,7 +2,7 @@ import { Modal, Form, Input, Select, DatePicker, Row, Col } from "antd";
 import dayjs from "dayjs";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { priorityOptions, statusOptions } from "@/utils/constants";
+import { priorityOptions, statusOptions, prOption } from "@/utils/constants";
 import { useLoading } from "../Loading/LoadingContexts";
 import { getPullRequests } from "@/services/github.service";
 import { useEffect, useState } from "react";
@@ -11,14 +11,6 @@ interface TasksCreateDialogProps {
   open: boolean;
   onCreate: (values: any) => void;
   onCancel: () => void;
-}
-
-type prOption = {
-  label: JSX.Element;
-  value: number;
-  status: string;
-  repository: string;
-  title: string;
 }
 
 const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
@@ -43,7 +35,10 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
   
         const label = (
           <div>
-            <span style={{ height: '10px', width: '10px', backgroundColor: statusColor, borderRadius: '50%', display: 'inline-block', marginRight: '5px' }}></span>
+            <span
+              title={status} 
+              style={{ height: '10px', width: '10px', backgroundColor: statusColor, borderRadius: '50%', display: 'inline-block', marginRight: '5px' }}
+            />
             {pr.title} <span style={{ color: '#888' }}>({pr.base.repo.name})</span>
           </div>
         );
@@ -77,10 +72,6 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
   }, [session.data]);
 
   const [form] = Form.useForm();
-
-  const handleSearch = (value: string) => {
-    console.log("search:", value);
-  };
 
   return (
     <Modal
@@ -159,7 +150,6 @@ const TasksCreateDialog: React.FC<TasksCreateDialogProps> = ({
             defaultActiveFirstOption={false}
             suffixIcon={null}
             filterOption={false}
-            onSearch={handleSearch}
             options={prOptions}
           />
         </Form.Item>

@@ -11,3 +11,11 @@ export const statusOptions = [
   { value: "merged", label: "Mergeado", color: "green" },
   { value: "closed", label: "Fechado", color: "red" },
 ];
+
+export type prOption = {
+  label: JSX.Element;
+  value: number;
+  status: string;
+  repository: string;
+  title: string;
+}

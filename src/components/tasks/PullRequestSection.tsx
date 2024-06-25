@@ -1,4 +1,5 @@
 import { Typography } from "antd";
+import { statusOptions } from "@/utils/constants";
 
 interface PullRequestsSectionProps {
   name: string;
@@ -6,11 +7,7 @@ interface PullRequestsSectionProps {
 }
 
 const PullRequestSection = ({ name, status }: PullRequestsSectionProps) => {
-  const statusColors = {
-    open: "green",
-    closed: "red",
-    merged: "purple",
-  };
+  const statusColor = statusOptions.find((option) => option.value === status)?.color;
 
   return (
     <div
@@ -18,8 +15,9 @@ const PullRequestSection = ({ name, status }: PullRequestsSectionProps) => {
       style={{ border: "1px solid #303030" }}
     >
       <div
+        title={status}
         className="rounded-full w-3 h-3 m-2"
-        style={{ backgroundColor: statusColors[status as "open" | "closed" | "merged"] }}
+        style={{ backgroundColor: statusColor }}
       ></div>
 
       <div className="flex flex-col flex-1 items-start mr-4">

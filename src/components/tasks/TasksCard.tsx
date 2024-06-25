@@ -16,12 +16,14 @@ import {
   ExclamationCircleFilled,
 } from "@ant-design/icons";
 import PullRequestSection from "@/components/tasks/PullRequestSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import "./tasks.css";
 import { Task } from "@prisma/client";
-import { priorityOptions } from "@/utils/constants";
+import { getPullRequests } from "@/services/github.service";
+import { priorityOptions, prOption, statusOptions } from "@/utils/constants";
+import { useSession } from "next-auth/react";
 
 interface TaskCardProps {
   task: Task;
@@ -36,9 +38,61 @@ const TaskCard: React.FC<TaskCardProps> = ({
   updateTask,
   deleteTask,
 }) => {
+  const session = useSession();
+  
   const [expanded, setExpanded] = useState(false);
   const [taskCopy, setTaskCopy] = useState<Task>(task);
   const [isCompleted, setIsCompleted] = useState(task.completed || false);
+  const [prOptions, setPrOptions] = useState([] as prOption[]);
+
+  useEffect(() => {
+    const getPRStatus = (pr: any) => {
+      if (pr.merged_at) return "merged";
+      return pr.state;
+    }
+  
+    const formatPRInfos = (prInfos: any) => {
+      return prInfos.map((pr: any) => {
+        const status = getPRStatus(pr);
+        const statusColor = statusOptions.find((s) => s.value === status)?.color;
+  
+        const label = (
+          <div>
+            <span
+              title={status} 
+              style={{ height: '10px', width: '10px', backgroundColor: statusColor, borderRadius: '50%', display: 'inline-block', marginRight: '5px' }}
+            />
+            {pr.title} <span style={{ color: '#888' }}>({pr.base.repo.name})</span>
+          </div>
+        );
+  
+        return {
+          title: pr.title,
+          value: pr.id,
+          status,
+          repository: pr.base.repo.name,
+          label
+        }
+      })
+    };
+
+    const fetchPullRequests = async () => {
+      try {
+        const accessToken = (session.data as any)?.accessToken;
+        if (!accessToken) return;
+
+        const prInfos = await getPullRequests(accessToken);
+
+        const formattedData = formatPRInfos(prInfos);
+
+        setPrOptions(formattedData);
+      } catch (error) {
+        console.error('Failed to fetch pull requests:', error);
+      }
+    };
+
+    fetchPullRequests();
+  }, [session.data]);
 
   const handleCompletionChange = (e: any) => {
     const completed = !task.completed;
@@ -58,12 +112,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
       setTaskCopy({ ...task });
     }
   };
-
-  const prOptions = [
-    { value: "login-page", label: "login-page" },
-    { value: "config-page", label: "config-page" },
-    { value: "dashboard-page", label: "dashboard-page" },
-  ];
 
   const handleSearch = (value: string) => {
     console.log("search:", value);
@@ -97,6 +145,19 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const handleSelectChange = (value: string, name: string) => {
     setTaskCopy({ ...taskCopy, [name]: value });
   };
+
+  const handlePrChange = (value: number | string) => {
+    console.log(value)
+    const selectedPr = prOptions.find((pr) => pr.value === value);
+    console.log(selectedPr, prOptions)
+    if (selectedPr) {
+      setTaskCopy({
+        ...taskCopy,
+        pullRequestName: selectedPr.title,
+        pullRequestStatus: selectedPr.status,
+      });
+    }
+  }
 
   const handleDateChange = (date: dayjs.Dayjs | null) => {
     if (date) {
@@ -166,7 +227,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
                   filterOption={false}
                   onSearch={handleSearch}
                   options={prOptions}
-                  onChange={(value) => handleSelectChange(value, "pullRequest")}
+                  onChange={(value) => handlePrChange(value)}
                 />
 
                 <DatePicker

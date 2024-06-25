@@ -54,7 +54,11 @@ export default function Dashboard() {
     }
 
     const newTask = await axios
-      .post("/api/task", { ...task, id: undefined })
+      .post("/api/task", { 
+        ...task, 
+        id: undefined,
+        title: task.title + " (Cópia)",
+      })
       .then((res) => res.data);
 
     setTasks([...tasks, newTask]);
