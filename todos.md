@@ -1,4 +1,5 @@
-[] - Adicionar vínculo de PR em criação
-[] - Adicionar vínculo de PR em edição
-[] - Adicionar vínculo de PR na hora de buscar as Tasks
-[] - Adicionar estado de loading nas tarefas quando está criando, editando, filtrando e excluindo
+[] - Adicionar legenda de o que cada cor do PR significa
+[] - Adicioanar vinculo de PRs na edição
+[] - Adicionar link para o PR
+[] - Adicionar (1) ao duplicar uma tarefa
+[] - Adicionar link para o perfil do Github
