@@ -4,6 +4,9 @@ import { useLoading } from "@/components/Loading/LoadingContexts";
 import { Button, Layout, theme } from "antd";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import Image from "next/image";
+import logoLight from "../../public/static/logo-light.png";
+import logoDark from "../../public/static/logo-dark.png";
 
 export default function Home() {
   const {
@@ -17,12 +20,18 @@ export default function Home() {
     <Layout className="h-screen">
       <Layout.Content className="flex flex-col gap-16 justify-center items-center">
         <div
-          className="w-1/6 h-1/2 rounded-md"
+          className="rounded-md"
           style={{
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
           }}
-        ></div>
+        >
+          <Image
+            src={colorBgContainer == "#141414" ? logoLight : logoDark}
+            width={300}
+            alt="GitHub TODO Logo"
+          />
+        </div>
 
         <div className="flex flex-col gap-4 justify-center items-center">
           <Button
